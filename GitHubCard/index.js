@@ -5,17 +5,14 @@ https://api.github.com/users/ajironside
 */
 
 /* axios.get('https://api.github.com/users/ajironside')
-    .then(function(response) {
+    .then(response => {
         // handle success
         console.log(response)
     })
-    .catch(function(error) {
+    .catch(error => {
         // handle error
         console.log(error)
-    })
-    .then(function() {
-        // always executed
-    }); */
+    }) */
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -98,6 +95,7 @@ create a component that will return the following DOM element:
 */
 
 const createCard = (data) => {
+    //create elements
     const userCard = document.createElement('div');
     const newImage = document.createElement('img');
     const cardInfo = document.createElement('div');
@@ -110,7 +108,25 @@ const createCard = (data) => {
     const userFollowing = document.createElement('p');
     const userBio = document.createElement('p');
 
+    //append elements
+    userCard.appendChild(newImage);
+    userCard.appendChild(cardInfo);
+    cardInfo.appendChild(userName);
+    cardInfo.appendChild(gitName);
+    cardInfo.appendChild(userLoc);
+    cardInfo.appendChild(userProfile);
+    userProfile.appendChild(userPage);
+    cardInfo.appendChild(userFollowers);
+    cardInfo.appendChild(userFollowing);
+    cardInfo.appendChild(userBio);
 
+    //add classes
+    userCard.classList.add('card');
+    cardInfo.classList.add('card-info');
+    userName.classList.add('name');
+    gitName.classList.add('username');
+
+    return userCard;
 }
 
 /* List of LS Instructors Github username's: 
