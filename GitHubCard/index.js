@@ -4,38 +4,6 @@ using axios, send a GET request to the following URL
 https://api.github.com/users/ajironside
 */
 
-const entryPointInHTML = document.querySelector('.cards')
-
-/* const followersArray = [
-    'tetondan',
-    'dustinmyers',
-    'justsml',
-    'luishrd',
-    'bigknell'
-] */
-
-axios.get('https://api.github.com/users/ajironside')
-    .then(response => {
-        let card = createCard(response.data);
-        entryPointInHTML.prepend(card);
-        return response.data.followers_url;
-    })
-    .then(response => {
-        axios.get(response)
-            .then(response => {
-                response.data.forEach(result => {
-                    axios.get(result.url)
-                        .then(response => {
-                            let card = createCard(response.data);
-                            entryPointInHTML.append(card);
-                        })
-                })
-            })
-    })
-    .catch(error => {
-        console.log('Error: ', error)
-    })
-
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -80,6 +48,30 @@ create a component that will return the following DOM element:
 </div>
 */
 
+const entryPointInHTML = document.querySelector('.cards')
+
+axios.get('https://api.github.com/users/ajironside')
+    .then(response => {
+        let card = createCard(response.data);
+        entryPointInHTML.prepend(card);
+        return response.data.followers_url;
+    })
+    .then(response => {
+        axios.get(response)
+            .then(response => {
+                response.data.forEach(result => {
+                    axios.get(result.url)
+                        .then(response => {
+                            let card = createCard(response.data);
+                            entryPointInHTML.append(card);
+                        })
+                })
+            })
+    })
+    .catch(error => {
+        console.log('Error: ', error)
+    })
+
 const createCard = (data) => {
     //create elements
     const userCard = document.createElement('div');
@@ -89,7 +81,6 @@ const createCard = (data) => {
     const gitName = document.createElement('p');
     const userLoc = document.createElement('p');
     const userProfile = document.createElement('p');
-    const userPage = document.createElement('a');
     const userFollowers = document.createElement('p');
     const userFollowing = document.createElement('p');
     const userBio = document.createElement('p');
@@ -104,7 +95,6 @@ const createCard = (data) => {
     cardInfo.appendChild(userFollowers);
     cardInfo.appendChild(userFollowing);
     cardInfo.appendChild(userBio);
-    userProfile.appendChild(userPage);
 
     //add classes
     userCard.classList.add('card');
@@ -116,15 +106,33 @@ const createCard = (data) => {
     newImage.src = data.avatar_url;
     userName.textContent = data.name;
     gitName.textContent = data.login;
-    userLoc.textContent = location;
-    userProfile.textContent = "Profile: ";
-    userPage.src = data.html_url;
+    userLoc.textContent = data.location;
+    userProfile.textContent = "Profile: " + data.html_url;
     userFollowers.textContent = data.followers;
     userFollowing.textContent = data.following;
     userBio.textContent = data.bio;
 
     return userCard;
 }
+
+const followersArray = [
+    "tetondan",
+    "dustinmyers",
+    "justsml",
+    "luishrd",
+    "bigknell"
+]
+
+followersArray.forEach(follower => {
+    axios.get(`https://api.github.com/users/${follower}`)
+        .then(response => {
+            let card = createCard(response.data);
+            entryPointInHTML.append(card);
+        })
+        .catch(error => {
+            console.log('Error: ', error);
+        });
+})
 
 /* List of LS Instructors Github username's: 
   tetondan
