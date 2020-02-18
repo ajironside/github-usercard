@@ -6,43 +6,41 @@ https://api.github.com/users/ajironside
 
 const entryPointInHTML = document.querySelector('.cards')
 
-const followersArray = [
+/* const followersArray = [
     'tetondan',
     'dustinmyers',
     'justsml',
     'luishrd',
     'bigknell'
-]
+] */
 
-/*axios.get('https://api.github.com/users/ajironside')
+axios.get('https://api.github.com/users/ajironside')
     .then(response => {
-          response.data.message.forEach(url => {
-          const newUser = userCard(url);
-          entryPointInHTML.appendChild(newUser);
-        })
+        let card = createCard(response.data);
+        entryPointInHTML.prepend(card);
+        return response.data.followers_url;
+    })
+    .then(response => {
+        axios.get(response)
+            .then(response => {
+                response.data.forEach(result => {
+                    axios.get(result.url)
+                        .then(response => {
+                            let card = createCard(response.data);
+                            entryPointInHTML.append(card);
+                        })
+                })
+            })
     })
     .catch(error => {
-        // handle error
-        console.log('Server could not find user data', error)
-    }) */
+        console.log('Error: ', error)
+    })
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
    Skip to Step 3.
 */
-
-//static example object
-const data = [{
-    login: "ajironside",
-    avatar_url: "https://avatars0.githubusercontent.com/u/29545461?v=4",
-    html_url: "https://github.com/ajironside",
-    name: "Amanda Ironside",
-    location: "NM",
-    bio: null,
-    followers: 1,
-    following: 1
-}]
 
 /* Step 4: 
 Pass the data received from Github into your function, 
@@ -84,18 +82,21 @@ create a component that will return the following DOM element:
 
 const createCard = (data) => {
     //create elements
-    //append elements
-    //add classes
-    //add textContent
     const userCard = document.createElement('div');
+    const newImage = document.createElement('img');
+    const cardInfo = document.createElement('div');
+    const userName = document.createElement('h3');
+    const gitName = document.createElement('p');
+    const userLoc = document.createElement('p');
+    const userProfile = document.createElement('p');
+    const userPage = document.createElement('a');
+    const userFollowers = document.createElement('p');
+    const userFollowing = document.createElement('p');
+    const userBio = document.createElement('p');
+
+    //append elements
     userCard.appendChild(newImage);
     userCard.appendChild(cardInfo);
-    userCard.classList.add('card');
-
-    const newImage = document.createElement('img');
-    newImage.src = data.avatar_url;
-
-    const cardInfo = document.createElement('div');
     cardInfo.appendChild(userName);
     cardInfo.appendChild(gitName);
     cardInfo.appendChild(userLoc);
@@ -103,45 +104,27 @@ const createCard = (data) => {
     cardInfo.appendChild(userFollowers);
     cardInfo.appendChild(userFollowing);
     cardInfo.appendChild(userBio);
-    cardInfo.classList.add('card-info');
-
-    const userName = document.createElement('h3');
-    userName.classList.add('name');
-    userName.textContent = data.name;
-
-    const gitName = document.createElement('p');
-    gitName.classList.add('username');
-    gitName.textContent = data.login;
-
-    const userLoc = document.createElement('p');
-    userLoc.textContent = location;
-
-    const userProfile = document.createElement('p');
     userProfile.appendChild(userPage);
+
+    //add classes
+    userCard.classList.add('card');
+    cardInfo.classList.add('card-info');
+    userName.classList.add('name');
+    gitName.classList.add('username');
+
+    //add textContent and source info
+    newImage.src = data.avatar_url;
+    userName.textContent = data.name;
+    gitName.textContent = data.login;
+    userLoc.textContent = location;
     userProfile.textContent = "Profile: ";
-
-    const userPage = document.createElement('a');
     userPage.src = data.html_url;
-
-    const userFollowers = document.createElement('p');
     userFollowers.textContent = data.followers;
-
-    const userFollowing = document.createElement('p');
     userFollowing.textContent = data.following;
-
-    const userBio = document.createElement('p');
     userBio.textContent = data.bio;
 
     return userCard;
 }
-
-//grab parent element
-const page = document.querySelector('.container');
-
-//append to parent element
-data.map(userData => {
-    page.appendChild(createCard(userData.avatar_url, userData.name, userData.login, userData.location, userData.html_url, userData.followers, userData.following))
-})
 
 /* List of LS Instructors Github username's: 
   tetondan
