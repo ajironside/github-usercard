@@ -52,7 +52,7 @@ const entryPointInHTML = document.querySelector('.cards')
 
 axios.get('https://api.github.com/users/ajironside')
     .then(response => {
-        let card = createCard(response.data);
+        const card = createCard(response.data);
         entryPointInHTML.prepend(card);
         return response.data.followers_url;
     })
@@ -81,6 +81,7 @@ const createCard = (data) => {
     const gitName = document.createElement('p');
     const userLoc = document.createElement('p');
     const userProfile = document.createElement('p');
+    const userPage = document.createElement('a');
     const userFollowers = document.createElement('p');
     const userFollowing = document.createElement('p');
     const userBio = document.createElement('p');
@@ -92,6 +93,7 @@ const createCard = (data) => {
     cardInfo.appendChild(gitName);
     cardInfo.appendChild(userLoc);
     cardInfo.appendChild(userProfile);
+    userProfile.append(userPage);
     cardInfo.appendChild(userFollowers);
     cardInfo.appendChild(userFollowing);
     cardInfo.appendChild(userBio);
@@ -107,9 +109,11 @@ const createCard = (data) => {
     userName.textContent = data.name;
     gitName.textContent = data.login;
     userLoc.textContent = data.location;
-    userProfile.textContent = "Profile: " + data.html_url;
-    userFollowers.textContent = data.followers;
-    userFollowing.textContent = data.following;
+    userPage.textContent = data.html_url;
+    userPage.href = data.html_url;
+    userProfile.textContent = `Profile: ${userPage}`;
+    userFollowers.textContent = `Followers: ${data.followers}`;
+    userFollowing.textContent = `Following: ${data.following}`;
     userBio.textContent = data.bio;
 
     return userCard;
